@@ -17,7 +17,7 @@ namespace RM.Hotel
                     (
                         (state, action) => 
                         {
-                            state.Coins = 1000;
+                            state.Coins = action.StartCoins;
                             return state;
                         }
                     ),
@@ -25,7 +25,7 @@ namespace RM.Hotel
                     (
                         (state, action) => 
                         {
-                            state.Coins = Math.Max(0, state.Coins - 5);
+                            state.Coins = Math.Max(0, state.Coins - action.Cost);
                             return state;
                         }
                     )

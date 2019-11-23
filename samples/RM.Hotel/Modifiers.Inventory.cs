@@ -26,7 +26,7 @@ namespace RM.Hotel
                     (
                         (state, action) => 
                         {
-                            state.Decos = state.Decos.Add(new Deco());
+                            state.Decos = state.Decos.Add(new Deco { TypeId = action.TypeId, Count = 1 });
                             return state;
                         }
                     )
