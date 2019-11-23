@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Collections.Immutable;
 using MagicSpritz;
 
@@ -9,8 +10,16 @@ namespace RM.Hotel
         static void Main(string[] args)
         {
             var store = new Store<PlayerData>();
-            store.AddModifiers(Inventory.Modifiers);
-            store.AddModifiers(Currency.Modifiers);
+
+            var server = new ServerMiddleware();
+            var history = new HistoryMiddleware();
+            store.AddMiddlewares(server, history);
+
+            var modifiers = new List<Modifier<PlayerData>>();
+            modifiers.AddRange(Currency.Modifiers);
+            modifiers.AddRange(Inventory.Modifiers);
+            store.AddModifiers(modifiers.ToArray());
+
             // store.Select().Subscribe(x => Console.WriteLine(x));
             store.Select(x => x.Coins).Subscribe(x => Console.WriteLine("Coins: " + x));
             store.Select(x => x.Decos).Subscribe(x => Console.WriteLine("Decos: " + (x == null ? "Empty" : x.Count.ToString())));

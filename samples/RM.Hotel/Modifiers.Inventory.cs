@@ -2,19 +2,18 @@ using System;
 using System.Collections.Generic;
 using System.Collections.Immutable;
 using MagicSpritz;
-using static MagicSpritz.Modifiers;
 
 namespace RM.Hotel
 {
     public static class Inventory
     {
-        public static Modifier<PlayerData>[] Modifiers
+        public static List<Modifier<PlayerData>> Modifiers
         {
             get
             {
                 return new List<Modifier<PlayerData>>
                 {
-                    Create<PlayerData, NewGameAction>
+                    Modifier<PlayerData>.Create<NewGameAction>
                     (
                         (state, action) => 
                         {
@@ -22,7 +21,7 @@ namespace RM.Hotel
                             return state;
                         }
                     ),
-                    Create<PlayerData, BuyDecoAction>
+                    Modifier<PlayerData>.Create<BuyDecoAction>
                     (
                         (state, action) => 
                         {
@@ -30,8 +29,7 @@ namespace RM.Hotel
                             return state;
                         }
                     )
-                }
-                .ToArray();
+                };
             }
         }
     }

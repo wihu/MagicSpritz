@@ -59,7 +59,7 @@ namespace MagicSpritz
 
         private T Modify(T state, IAction action)
         {
-            var modifiers = _modifiers.Where(x => x.Type == action.GetType());
+            var modifiers = _modifiers.Where(x => x.ActionType == action.GetType());
             foreach (var modifier in modifiers)
             {
                 state = modifier.Modify(state, action);
