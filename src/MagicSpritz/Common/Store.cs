@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Reactive.Subjects;
+using System.Reactive.Linq;
 
 namespace MagicSpritz
 {
@@ -47,6 +48,13 @@ namespace MagicSpritz
         public IObservable<T> Select()
         {
             return _stateSubject;
+        }
+
+        public IObservable<TResult> Select<TResult>(Func<T, TResult> selector)
+        {
+            return _stateSubject
+                .Select(selector)
+                .DistinctUntilChanged();
         }
     }
 }
