@@ -6,11 +6,17 @@ using System.Reactive.Linq;
 
 namespace MagicSpritz
 {
-    public class Store<T>  where T : new()
+    public interface IStoreUpdater
+    {
+        void UpdateStore(IAction action);
+    }
+
+    public class Store<T> : IStoreUpdater where T : new()
     {
         private T _state;
         private BehaviorSubject<T> _stateSubject;
         private readonly List<Modifier<T>> _modifiers;
+        private IStoreUpdater _updater;
 
         public Store() : this(new T())
         {
@@ -22,14 +28,30 @@ namespace MagicSpritz
             _state = state;
             _stateSubject = new BehaviorSubject<T>(_state);
             _modifiers = new List<Modifier<T>>();
+            _updater = this;
         }
 
         public void AddModifiers(params Modifier<T>[] modifiers)
         {
             _modifiers.AddRange(modifiers);
         }
+        public void AddMiddlewares(params Middleware<T>[] middlewares)
+        {
+            var current = _updater;
+            foreach (var middleware in middlewares)
+            {
+                middleware.Next = current;
+                current = middleware;
+            }
+            _updater = current;
+        }
 
         public void Update(IAction action)
+        {
+            _updater.UpdateStore(action);
+        }
+
+        void IStoreUpdater.UpdateStore(IAction action)
         {
             _state = Modify(_state, action);
             _stateSubject.OnNext(_state);
