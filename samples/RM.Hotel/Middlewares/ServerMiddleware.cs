@@ -13,7 +13,7 @@ public class ServerMiddleware : Middleware<PlayerData>
 
     protected override void AfterUpdate(IAction action)
     {
-        Console.WriteLine("[Server] After Update = " + action.GetType());
+        // Console.WriteLine("[Server] After Update = " + action.GetType());
     }
 }
 }

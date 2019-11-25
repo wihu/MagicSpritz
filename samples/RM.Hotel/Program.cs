@@ -1,7 +1,9 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.IO;
 using MagicSpritz;
+using McMaster.Extensions.CommandLineUtils;
 
 namespace RM.Hotel
 {
@@ -10,8 +12,10 @@ namespace RM.Hotel
     
     class Program
     {
-        static void Main(string[] args)
+        static int Main(string[] args)
         {
+            const int kDefaultStartCoins = 5000;
+
             var store = new Store<Models.PlayerData>();
 
             var server = new ServerMiddleware();
@@ -26,10 +30,61 @@ namespace RM.Hotel
             // store.Select().Subscribe(x => Console.WriteLine(x));
             store.Select(x => x.Stats.Coins).Subscribe(x => Console.WriteLine("Coins: " + x));
             store.Select(x => x.Inventory.Items).Subscribe(x => Console.WriteLine("Decos: " + (x == null ? "Empty" : x.Sum(x => x.Value.Count).ToString())));
-            store.Update(new NewGameAction { StartCoins = 5000 });
-            store.Update(new BuyDecoAction { TypeId = 1, Cost = 200 });
-            store.Update(new BuyDecoAction { TypeId = 1, Cost = 200 });
-            store.Update(new BuyDecoAction { TypeId = 2, Cost = 100 });
+            store.Update(new NewGameAction { StartCoins = kDefaultStartCoins });
+            // store.Update(new BuyDecoAction { TypeId = 1, Cost = 200 });
+            // store.Update(new BuyDecoAction { TypeId = 1, Cost = 200 });
+            // store.Update(new BuyDecoAction { TypeId = 2, Cost = 100 });
+
+            var app = new CommandLineApplication();
+            app.Command("newgame", config => 
+            {
+                var coins = config.Option("--coins", "Starting coins", CommandOptionType.SingleValue);
+
+                config.OnExecute(() => 
+                {
+                    if (!int.TryParse(coins.Value(), out int val))
+                    {
+                        val = kDefaultStartCoins;
+                    }
+                                        
+                    store.Update(new NewGameAction { StartCoins = val });
+                });
+            });
+
+            app.Command("buy", config => 
+            {
+                var typeIdArg = config.Argument("TypeId", "Item TypeId");
+                var costArg = config.Argument("Cost", "Item Cost");
+
+                config.OnExecute(() => 
+                {
+                    int.TryParse(typeIdArg.Value, out int typeId);
+                    int.TryParse(costArg.Value, out int cost);
+                    store.Update(new BuyDecoAction { TypeId = typeId, Cost = cost });
+                });
+            });
+
+            while (true)
+            {
+                var command = Prompt.GetString("Command", "#");
+                if (command == "bye")
+                {
+                    Console.WriteLine("bye!");
+                    break;
+                }
+
+                var tokens = command.Split(" ");
+                try
+                {
+                    app.Execute(tokens);
+                }
+                catch (Exception e)
+                {
+                    Console.WriteLine(e.StackTrace);
+                }
+            }
+
+            return 0;
         }
     }
 }
