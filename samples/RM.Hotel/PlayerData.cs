@@ -9,7 +9,7 @@ public struct Item
 }
 public struct Inventory
 {
-    public ImmutableList<Item> Items;    
+    public ImmutableDictionary<int, Item> Items;
 }
 
 public struct Placement

@@ -18,7 +18,7 @@ namespace RM.Hotel.Modifiers
                     (
                         (state, action) => 
                         {
-                            state.Inventory.Items = ImmutableList<Item>.Empty;
+                            state.Inventory.Items = ImmutableDictionary<int, Item>.Empty;
                             return state;
                         }
                     ),
@@ -26,7 +26,10 @@ namespace RM.Hotel.Modifiers
                     (
                         (state, action) => 
                         {
-                            state.Inventory.Items = state.Inventory.Items.Add(new Item { TypeId = action.TypeId, Count = 1 });
+                            var newItem = new Item { TypeId = action.TypeId, Count = 1};
+                            state.Inventory.Items.TryGetValue(newItem.TypeId, out var item);
+                            newItem.Count += item.Count;
+                            state.Inventory.Items = state.Inventory.Items.SetItem(newItem.TypeId, newItem);
                             return state;
                         }
                     )
