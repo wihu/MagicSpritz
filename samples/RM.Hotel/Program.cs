@@ -64,6 +64,30 @@ namespace RM.Hotel
                 });
             });
 
+            app.Command("time", config =>
+            {
+                config.OnExecute(() => 
+                {
+                    var start = DateTime.Now;
+                    var prev = start;
+                    Console.Write("Time: " + 0);
+                    Console.CursorVisible = false;
+                    while (!Console.KeyAvailable)
+                    {
+                        var now = DateTime.Now;
+                        double dt = (now - prev).TotalSeconds;
+                        if (dt >= 1.0)
+                        {
+                            prev = now;
+                            Console.SetCursorPosition(0, Console.CursorTop);
+                            Console.Write("Time: " + (int)(now - start).TotalSeconds);
+                        }
+                    }
+                    Console.ReadKey(true);
+                    Console.WriteLine();
+                });
+            });
+
             while (true)
             {
                 var command = Prompt.GetString("Command", "#");
