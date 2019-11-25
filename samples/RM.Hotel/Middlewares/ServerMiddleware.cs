@@ -1,7 +1,7 @@
 using System;
 using MagicSpritz;
 
-namespace RM.Hotel
+namespace RM.Hotel.Middlewares
 {
 public class ServerMiddleware : Middleware<PlayerData>
 {

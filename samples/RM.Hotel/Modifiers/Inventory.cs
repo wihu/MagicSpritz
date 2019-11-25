@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Collections.Immutable;
 using MagicSpritz;
 
-namespace RM.Hotel
+namespace RM.Hotel.Modifiers
 {
     public static class Inventory
     {
