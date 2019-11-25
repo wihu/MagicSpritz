@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.Collections.Immutable;
 using MagicSpritz;
+using RM.Hotel.Models;
 
 namespace RM.Hotel.Modifiers
 {
@@ -17,7 +18,7 @@ namespace RM.Hotel.Modifiers
                     (
                         (state, action) => 
                         {
-                            state.Decos = ImmutableList<Deco>.Empty;
+                            state.Inventory.Items = ImmutableList<Item>.Empty;
                             return state;
                         }
                     ),
@@ -25,7 +26,7 @@ namespace RM.Hotel.Modifiers
                     (
                         (state, action) => 
                         {
-                            state.Decos = state.Decos.Add(new Deco { TypeId = action.TypeId, Count = 1 });
+                            state.Inventory.Items = state.Inventory.Items.Add(new Item { TypeId = action.TypeId, Count = 1 });
                             return state;
                         }
                     )

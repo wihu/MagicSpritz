@@ -1,5 +1,6 @@
 using System;
 using MagicSpritz;
+using RM.Hotel.Models;
 
 namespace RM.Hotel.Middlewares
 {

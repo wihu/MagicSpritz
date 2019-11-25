@@ -11,20 +11,20 @@ namespace RM.Hotel
     {
         static void Main(string[] args)
         {
-            var store = new Store<PlayerData>();
+            var store = new Store<Models.PlayerData>();
 
             var server = new ServerMiddleware();
             var history = new HistoryMiddleware();
             store.AddMiddlewares(server, history);
 
-            var modifiers = new List<Modifier<PlayerData>>();
+            var modifiers = new List<Modifier<Models.PlayerData>>();
             modifiers.AddRange(Currency.Modifiers);
             modifiers.AddRange(Inventory.Modifiers);
             store.AddModifiers(modifiers.ToArray());
 
             // store.Select().Subscribe(x => Console.WriteLine(x));
-            store.Select(x => x.Coins).Subscribe(x => Console.WriteLine("Coins: " + x));
-            store.Select(x => x.Decos).Subscribe(x => Console.WriteLine("Decos: " + (x == null ? "Empty" : x.Count.ToString())));
+            store.Select(x => x.Stats.Coins).Subscribe(x => Console.WriteLine("Coins: " + x));
+            store.Select(x => x.Inventory.Items).Subscribe(x => Console.WriteLine("Decos: " + (x == null ? "Empty" : x.Count.ToString())));
             store.Update(new NewGameAction { StartCoins = 5000 });
             store.Update(new BuyDecoAction { TypeId = 1, Cost = 200 });
         }

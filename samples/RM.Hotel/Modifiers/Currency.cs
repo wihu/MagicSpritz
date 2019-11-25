@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using MagicSpritz;
+using RM.Hotel.Models;
 
 namespace RM.Hotel.Modifiers
 {
@@ -16,7 +17,7 @@ namespace RM.Hotel.Modifiers
                     (
                         (state, action) => 
                         {
-                            state.Coins = action.StartCoins;
+                            state.Stats.Coins = action.StartCoins;
                             return state;
                         }
                     ),
@@ -24,7 +25,7 @@ namespace RM.Hotel.Modifiers
                     (
                         (state, action) => 
                         {
-                            state.Coins = Math.Max(0, state.Coins - action.Cost);
+                            state.Stats.Coins = Math.Max(0, state.Stats.Coins - action.Cost);
                             return state;
                         }
                     )
