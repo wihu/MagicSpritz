@@ -64,6 +64,7 @@ namespace RM.Hotel.Modifiers
                     (
                         (context, state, action) => 
                         {
+                            Console.WriteLine($"Guest[{action.GuestTypeId}] check-out");
                             return state;
                         }
                     )

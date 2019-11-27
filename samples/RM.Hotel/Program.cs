@@ -52,7 +52,7 @@ namespace RM.Hotel
 
             store.Update(new NewGameAction { StartCoins = kDefaultStartCoins });
 
-            var app = new CommandLineApplication();
+            var app = new Game(store);
             app.Command("newgame", config => 
             {
                 var coins = config.Option("--coins", "Starting coins", CommandOptionType.SingleValue);
@@ -96,21 +96,8 @@ namespace RM.Hotel
                 });
             });
 
-            app.Command("guest", config => 
-            {
-                config.Command("in", sub =>
-                {
-                    var guestTypeIdArg = sub.Argument("GuestTypeId", "Guest TypeId");
-                    var roomTypeIdArg = sub.Argument("RoomTypeId", "Room TypeId");
-                    
-                    sub.OnExecute(() => 
-                    {
-                        int.TryParse(guestTypeIdArg.Value, out int guestTypeId);
-                        int.TryParse(roomTypeIdArg.Value, out int roomTypeId);
-                        store.Update(new GuestCheckinAction { GuestTypeId = guestTypeId, RoomTypeId = roomTypeId });
-                    });
-                });
-            });
+            app.AddCommand<int, int>("guest", "cin", (guestId, roomId) => new GuestCheckinAction { GuestTypeId = guestId, RoomTypeId = roomId });
+            app.AddCommand<int>("guest", "cout", (guestId) => new GuestCheckoutAction { GuestTypeId = guestId });
 
             app.Command("timer", config =>
             {
@@ -146,12 +133,14 @@ namespace RM.Hotel
                 }
 
                 var tokens = command.Split(" ");
+                
                 try
                 {
                     app.Execute(tokens);
                 }
                 catch (Exception e)
                 {
+                    Console.WriteLine($"{e.GetType()}: {e.Message}");
                     Console.WriteLine(e.StackTrace);
                 }
             }
