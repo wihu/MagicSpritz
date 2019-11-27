@@ -26,7 +26,6 @@ namespace RM.Hotel.Modifiers
                             }
                             state.Hotel.Level = 1;   
                             state.Hotel.Rooms = rooms.ToImmutableList();
-                            // state.Hotel.Rooms.ForEach(r => Console.WriteLine($"Room[{r.TypeId}] => Level {r.Level}"));
                             return state;
                         }
                     ),
@@ -36,7 +35,6 @@ namespace RM.Hotel.Modifiers
                         {
                             const int kMaxLevel = 5;
                             int k = state.Hotel.Rooms.FindIndex(x => x.TypeId == action.TypeId);
-                            // Console.WriteLine($"Room[{action.TypeId}] => Index {k}");
                             if (k >= 0)
                             {
                                 var room = state.Hotel.Rooms.ElementAt(k);

@@ -43,7 +43,7 @@ public struct Guest
     public int RoomId;
     public int TaskId;
     public int Level;
-    public ImmutableList<Deco> RequiredDecos;
+    public ImmutableList<Item> RequiredDecos;
 }
 
 public struct Hotel

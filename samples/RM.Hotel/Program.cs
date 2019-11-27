@@ -15,6 +15,9 @@ namespace RM.Hotel
         static int Main(string[] args)
         {
             const int kDefaultStartCoins = 5000;
+            var gameConfig = new GameConfig();
+            var configProvider = new ConfigProvider();
+            configProvider.Add("default", gameConfig);
 
             var store = new Store<Models.PlayerData>();
 
@@ -22,10 +25,13 @@ namespace RM.Hotel
             var history = new HistoryMiddleware();
             store.AddMiddlewares(server, history);
 
+            var guest = new GuestModifierProvider(new GuestModifierFactory(configProvider));
+
             var modifiers = new List<Modifier<Models.PlayerData>>();
             modifiers.AddRange(Currency.Modifiers);
             modifiers.AddRange(Inventory.Modifiers);
             modifiers.AddRange(Hotel.Modifiers);
+            modifiers.AddRange(guest.Modifiers);
             store.AddModifiers(modifiers.ToArray());
 
             // store.Select().Subscribe(x => Console.WriteLine(x));
@@ -45,9 +51,6 @@ namespace RM.Hotel
             });
 
             store.Update(new NewGameAction { StartCoins = kDefaultStartCoins });
-            // store.Update(new BuyDecoAction { TypeId = 1, Cost = 200 });
-            // store.Update(new BuyDecoAction { TypeId = 1, Cost = 200 });
-            // store.Update(new BuyDecoAction { TypeId = 2, Cost = 100 });
 
             var app = new CommandLineApplication();
             app.Command("newgame", config => 
@@ -78,15 +81,34 @@ namespace RM.Hotel
                 });
             });
 
-            app.Command("roomup", config => 
+            app.Command("room", config => 
             {
-                const int kUpgradeRoomCost = 100;
-                var typeIdArg = config.Argument("TypeId", "Item TypeId");
-                
-                config.OnExecute(() => 
+                config.Command("up", sub =>
                 {
-                    int.TryParse(typeIdArg.Value, out int typeId);
-                    store.Update(new UpgradeRoomAction { TypeId = typeId, Cost = kUpgradeRoomCost });
+                    const int kUpgradeRoomCost = 100;
+                    var typeIdArg = sub.Argument("TypeId", "Item TypeId");
+
+                    sub.OnExecute(() => 
+                    {
+                        int.TryParse(typeIdArg.Value, out int typeId);
+                        store.Update(new UpgradeRoomAction { TypeId = typeId, Cost = kUpgradeRoomCost });
+                    });
+                });
+            });
+
+            app.Command("guest", config => 
+            {
+                config.Command("in", sub =>
+                {
+                    var guestTypeIdArg = sub.Argument("GuestTypeId", "Guest TypeId");
+                    var roomTypeIdArg = sub.Argument("RoomTypeId", "Room TypeId");
+                    
+                    sub.OnExecute(() => 
+                    {
+                        int.TryParse(guestTypeIdArg.Value, out int guestTypeId);
+                        int.TryParse(roomTypeIdArg.Value, out int roomTypeId);
+                        store.Update(new GuestCheckinAction { GuestTypeId = guestTypeId, RoomTypeId = roomTypeId });
+                    });
                 });
             });
 
