@@ -43,11 +43,13 @@ public struct Guest
     public int RoomId;
     public int TaskId;
     public int Level;
+    public uint StartStayTimeSec;
     public ImmutableList<Item> RequiredDecos;
 }
 
 public struct Hotel
 {
+    public string Name;
     public int Level;
     public ImmutableList<Guest> Queue;
     public ImmutableList<Room> Rooms;

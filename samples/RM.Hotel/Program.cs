@@ -12,6 +12,24 @@ namespace RM.Hotel
     
     class Program
     {
+        static void ShowHotelStatus(Store<Models.PlayerData> store)
+        {
+            var token = store.Select(x => x.Hotel).Subscribe(hotel => 
+            {
+                Console.WriteLine(hotel.Name);
+                Console.WriteLine(hotel.Level);
+                if (hotel.Rooms == null)
+                {
+                    Console.WriteLine("Rooms: Empty");
+                }
+                else
+                {
+                    hotel.Rooms.ForEach(r => Console.WriteLine($"Room[{r.TypeId}] => Level {r.Level}"));
+                }
+            });
+            token.Dispose();
+        }
+
         static int Main(string[] args)
         {
             const int kDefaultStartCoins = 5000;
@@ -98,6 +116,7 @@ namespace RM.Hotel
 
             app.AddCommand<int, int>("guest", "cin", (guestId, roomId) => new GuestCheckinAction { GuestTypeId = guestId, RoomTypeId = roomId });
             app.AddCommand<int>("guest", "cout", (guestId) => new GuestCheckoutAction { GuestTypeId = guestId });
+            app.AddCommand("hotel", "status", () => ShowHotelStatus(store));
 
             app.Command("timer", config =>
             {

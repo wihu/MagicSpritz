@@ -24,6 +24,7 @@ namespace RM.Hotel.Modifiers
                             {
                                 rooms.Add(new Room { TypeId = i });
                             }
+                            state.Hotel.Name = "My Hotel";
                             state.Hotel.Level = 1;   
                             state.Hotel.Rooms = rooms.ToImmutableList();
                             return state;

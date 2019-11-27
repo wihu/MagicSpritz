@@ -14,6 +14,15 @@ namespace RM.Hotel
             _store = store;
         }
 
+        public void AddCommand(string arg0, string arg1, Action action)
+        {
+            var main = GetOrCreateCommand(arg0);
+            main.Command(arg1, sub => 
+            {
+                sub.OnExecute(() => action.Invoke());
+            });
+        }
+
         public void AddCommand<T2>(string arg0, string arg1, Func<T2, IAction> CreateStoreAction)
         where T2 : IConvertible
         {
