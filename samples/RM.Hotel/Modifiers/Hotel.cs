@@ -9,6 +9,48 @@ namespace RM.Hotel.Modifiers
 {
     public static class Hotel
     {
+        public class HotelModifierContext
+        {
+
+        }
+
+        public class ModifierFactory<TState, TContext> where TState : new()
+        {
+            protected TContext _context;
+
+            public Modifier<TState> Create<TAction>(Func<TContext, TState, TAction, TState> modify)
+            where TAction : class, IAction
+            {
+                var modifier = new Modifier<TState, TContext>(_context);
+                modifier.On<TAction>(modify);
+                return modifier;
+            }
+        }
+
+        public class HotelModifierProvider
+        {
+            private ModifierFactory<PlayerData, HotelModifierContext> _factory;
+
+            public List<Modifier<PlayerData>> Modifiers
+            {
+                get
+                {
+                    return new List<Modifier<PlayerData>>
+                    {
+                        _factory.Create<RM.Hotel.Actions.BuildMachineAction>
+                        (
+                            (context, state, action) => 
+                            {
+                                var machine = new Machine { TypeId = action.TypeId };
+                                state.Hotel.Machines.Add(machine);
+                                return state;
+                            }
+                        )
+                    };
+                }
+            }
+        }
+
         public static List<Modifier<PlayerData>> Modifiers
         {
             get
@@ -27,6 +69,7 @@ namespace RM.Hotel.Modifiers
                             state.Hotel.Name = "My Hotel";
                             state.Hotel.Level = 1;   
                             state.Hotel.Rooms = rooms.ToImmutableList();
+                            state.Hotel.Machines = ImmutableList<Machine>.Empty;
                             return state;
                         }
                     ),

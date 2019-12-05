@@ -47,12 +47,33 @@ public struct Guest
     public ImmutableList<Item> RequiredDecos;
 }
 
+public struct Timer
+{
+    public int DurationSec;
+    public int StartTimeSec;
+}
+
+public struct ItemQueue
+{
+    public int TypeId;
+    public Timer Timer;
+}
+
+public struct Machine
+{
+    public int TypeId;
+    public int InstanceId;
+    public int Level;
+    public ImmutableList<ItemQueue> Queue;
+}
+
 public struct Hotel
 {
     public string Name;
     public int Level;
     public ImmutableList<Guest> Queue;
     public ImmutableList<Room> Rooms;
+    public ImmutableList<Machine> Machines;
 }
 
 public struct Stats
