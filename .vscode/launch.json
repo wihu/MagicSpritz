@@ -9,7 +9,7 @@
             "type": "coreclr",
             "request": "launch",
             "preLaunchTask": "build",
-            "program": "${workspaceFolder}/bin/Debug/netcoreapp3.0/MagicSpritz.dll",
+            "program": "${workspaceFolder}/samples/RM.Hotel/bin/Debug/netcoreapp3.0/RM.Hotel",
             "args": [],
             "cwd": "${workspaceFolder}",
             "console": "internalConsole",

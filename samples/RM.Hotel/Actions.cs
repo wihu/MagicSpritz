@@ -1,12 +1,20 @@
 using System.Collections.Generic;
 using MagicSpritz;
+using MessagePack;
 
 namespace RM.Hotel
 {
 using Models;
+[MessagePackObject]
 public class NewGameAction : IAction
 {
+    [Key(0)]
     public int StartCoins;
+
+    public override string ToString()
+    {
+        return $"[StartCoins = {StartCoins}]";
+    }
 }
 public class BuyDecoAction : IAction
 {

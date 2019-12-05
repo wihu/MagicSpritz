@@ -5,6 +5,7 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <PackageReference Include="MagicOnion" Version="2.6.4" />
     <PackageReference Include="System.Reactive" Version="4.2.0" />
   </ItemGroup>
 

@@ -4,6 +4,10 @@ using System.Linq;
 using System.IO;
 using MagicSpritz;
 using McMaster.Extensions.CommandLineUtils;
+using MagicOnion.Client;
+using Grpc.Core;
+using MessagePack;
+using MessagePack.Resolvers;
 
 namespace RM.Hotel
 {
@@ -12,6 +16,18 @@ namespace RM.Hotel
     
     class Program
     {
+
+        static void RegisterResolvers()
+        {
+            CompositeResolver.RegisterAndSetAsDefault
+            (
+                MagicOnion.Resolvers.MagicOnionResolver.Instance,
+                MessagePack.Resolvers.GeneratedResolver.Instance,
+                BuiltinResolver.Instance,
+                PrimitiveObjectResolver.Instance
+            );
+        }
+
         static void ShowHotelStatus(Store<Models.PlayerData> store)
         {
             var token = store.Select(x => x.Hotel).Subscribe(hotel => 
@@ -117,6 +133,40 @@ namespace RM.Hotel
             app.AddCommand<int, int>("guest", "cin", (guestId, roomId) => new GuestCheckinAction { GuestTypeId = guestId, RoomTypeId = roomId });
             app.AddCommand<int>("guest", "cout", (guestId) => new GuestCheckoutAction { GuestTypeId = guestId });
             app.AddCommand("hotel", "status", () => ShowHotelStatus(store));
+
+            MagicOnion.MagicOnionInitializer.Register();
+            RegisterResolvers();
+            var channel = new Channel("localhost", 12345, ChannelCredentials.Insecure);
+            var client = MagicOnionClient.Create<IStoreService>(channel);
+
+            app.AddCommand("sync", "new", async() => 
+            {
+                var t = new Transaction
+                {
+                    Id = 1,
+                    Hash = "abc",
+                    Action = new NewGameAction()
+                };
+
+                var result = await client.Update(t);
+                Console.WriteLine("sync result = " + result);
+            });
+
+            app.AddCommand("sync", "test", () => 
+            {
+                var t = new Transaction
+                {
+                    Id = 1,
+                    Hash = "abc",
+                    Action = new NewGameAction { StartCoins = 250 }
+                };
+
+                var bytes = MessagePackSerializer.Serialize(t);
+                var json = MessagePackSerializer.ToJson(bytes);
+                var result = MessagePackSerializer.Deserialize<Transaction>(bytes);
+                var newGame = result.Action as NewGameAction;
+                Console.WriteLine("sync result = " + json + " => " + result.ToString());
+            });
 
             app.Command("timer", config =>
             {
