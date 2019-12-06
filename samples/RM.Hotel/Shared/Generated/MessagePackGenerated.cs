@@ -95,6 +95,8 @@ namespace MessagePack.Formatters.RM.Hotel
             
             if (value is global::RM.Hotel.NewGameAction)
             {
+                // TODO: use type hasher -- https://stackoverflow.com/questions/51020619/unique-id-for-each-class
+                Console.WriteLine("ser hash = " + value.GetType().GetHashCode());
                 var formatter = formatterResolver.GetFormatter<global::RM.Hotel.NewGameAction>();
                 return formatter.Serialize(ref bytes, offset, value as global::RM.Hotel.NewGameAction, formatterResolver);
             }
@@ -112,6 +114,7 @@ namespace MessagePack.Formatters.RM.Hotel
 
             var formatter = formatterResolver.GetFormatter<global::RM.Hotel.NewGameAction>();
             var result = formatter.Deserialize(bytes, offset, formatterResolver, out readSize);
+            Console.WriteLine("des hash = " + result.GetType().GetHashCode());
             return result;
         }
     }

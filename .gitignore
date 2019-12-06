@@ -1,4 +1,8 @@
 src/MagicSpritz/bin
 src/MagicSpritz/obj
-samples/RM.Hotel/bin
-samples/RM.Hotel/obj
+samples/RM.Hotel/Server/bin
+samples/RM.Hotel/Server/obj
+samples/RM.Hotel/Client/bin
+samples/RM.Hotel/Client/obj
+samples/RM.Hotel/Shared/bin
+samples/RM.Hotel/Shared/obj

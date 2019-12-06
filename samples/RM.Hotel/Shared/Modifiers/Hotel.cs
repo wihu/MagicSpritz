@@ -31,6 +31,11 @@ namespace RM.Hotel.Modifiers
         {
             private ModifierFactory<PlayerData, HotelModifierContext> _factory;
 
+            public HotelModifierProvider(ModifierFactory<PlayerData, HotelModifierContext> factory)
+            {
+                _factory = factory;
+            }
+            
             public List<Modifier<PlayerData>> Modifiers
             {
                 get

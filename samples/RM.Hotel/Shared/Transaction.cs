@@ -4,7 +4,7 @@ using MessagePack;
 namespace RM.Hotel
 {
     [MessagePackObject]
-    public class Transaction
+    public class Transaction // Change to ActionPayload
     {
         [Key(0)]
         public int Id;
