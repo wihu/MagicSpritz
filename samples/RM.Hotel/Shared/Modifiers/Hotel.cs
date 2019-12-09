@@ -78,6 +78,13 @@ namespace RM.Hotel.Modifiers
                             return state;
                         }
                     ),
+                    Modifier<PlayerData>.Create<LoadGameAction>
+                    (
+                        (state, action) => 
+                        {
+                            return action.State;
+                        }
+                    ),
                     Modifier<PlayerData>.Create<UpgradeRoomAction>
                     (
                         (state, action) => 

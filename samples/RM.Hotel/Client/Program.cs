@@ -24,6 +24,7 @@ namespace RM.Hotel
             (
                 MagicOnion.Resolvers.MagicOnionResolver.Instance,
                 MessagePack.Resolvers.GeneratedResolver.Instance,
+                MessagePack.Resolvers.Client.GeneratedResolver.Instance,
                 BuiltinResolver.Instance,
                 PrimitiveObjectResolver.Instance
             );
@@ -167,6 +168,20 @@ namespace RM.Hotel
                 var result = MessagePackSerializer.Deserialize<Transaction>(bytes);
                 var newGame = result.Action as NewGameAction;
                 Console.WriteLine("sync result = " + json + " => " + result.ToString());
+            });
+
+            var config = new StoreLocalPersister.Config { FilePath = "LocalData/Player.txt", TextFormat = true };
+            var persister = new StoreLocalPersister(config);
+            app.AddCommand("data", "save", () =>
+            {
+                persister.Set<Models.PlayerData>("player", store.State);
+                persister.Save();
+            });
+            app.AddCommand("data", "load", () =>
+            {
+                persister.Load();
+                persister.Get<Models.PlayerData>("player", out var player);
+                store.Update(new LoadGameAction { State = player });
             });
 
             app.Command("timer", config =>

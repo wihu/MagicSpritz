@@ -16,6 +16,12 @@ public class NewGameAction : IAction
         return $"[StartCoins = {StartCoins}]";
     }
 }
+
+public class LoadGameAction : IAction
+{
+    public PlayerData State;
+}
+
 public class BuyDecoAction : IAction
 {
     public int TypeId;

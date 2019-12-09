@@ -18,6 +18,8 @@ namespace MagicSpritz
         private readonly List<Modifier<T>> _modifiers;
         private IStoreUpdater _updater;
 
+        public T State => _state;
+        
         public Store() : this(new T())
         {
 
