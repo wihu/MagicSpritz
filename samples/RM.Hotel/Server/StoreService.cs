@@ -11,6 +11,7 @@ namespace RM.Hotel.Server
     {
         UnaryResult<int> IStoreService.Update(Transaction t)
         {
+            Console.WriteLine(t.ToString());
             return new UnaryResult<int>(1234);
         }
     }

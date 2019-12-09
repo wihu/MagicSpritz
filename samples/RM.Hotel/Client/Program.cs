@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.IO;
+using System.Threading.Tasks;
 using MagicSpritz;
 using McMaster.Extensions.CommandLineUtils;
 using MagicOnion.Client;
@@ -46,7 +47,7 @@ namespace RM.Hotel
             token.Dispose();
         }
 
-        static int Main(string[] args)
+        static async Task Main(string[] args)
         {
             const int kDefaultStartCoins = 5000;
             var gameConfig = new GameConfig();
@@ -139,13 +140,13 @@ namespace RM.Hotel
             var channel = new Channel("localhost", 12345, ChannelCredentials.Insecure);
             var client = MagicOnionClient.Create<IStoreService>(channel);
 
-            app.AddCommand("sync", "new", async() => 
+            app.AddAsyncCommand("sync", "new", async () => 
             {
                 var t = new Transaction
                 {
                     Id = 1,
                     Hash = "abc",
-                    Action = new NewGameAction()
+                    Action = new NewGameAction { StartCoins = 250 }
                 };
 
                 var result = await client.Update(t);
@@ -205,7 +206,7 @@ namespace RM.Hotel
                 
                 try
                 {
-                    app.Execute(tokens);
+                    await app.ExecuteAsync(tokens);
                 }
                 catch (Exception e)
                 {
@@ -213,8 +214,6 @@ namespace RM.Hotel
                     Console.WriteLine(e.StackTrace);
                 }
             }
-
-            return 0;
         }
     }
 }

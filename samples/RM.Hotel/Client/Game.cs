@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.Threading.Tasks;
 using MagicSpritz;
 using McMaster.Extensions.CommandLineUtils;
 
@@ -12,6 +13,15 @@ namespace RM.Hotel
         public Game(IStoreUpdater store)
         {
             _store = store;
+        }
+
+        public void AddAsyncCommand(string arg0, string arg1, Func<Task> action)
+        {
+            var main = GetOrCreateCommand(arg0);
+            main.Command(arg1, sub => 
+            {
+                sub.OnExecuteAsync(async ct => await action.Invoke());
+            });
         }
 
         public void AddCommand(string arg0, string arg1, Action action)
