@@ -138,7 +138,7 @@ namespace RM.Hotel
 
             MagicOnion.MagicOnionInitializer.Register();
             RegisterResolvers();
-            var channel = new Channel("localhost", 12345, ChannelCredentials.Insecure);
+            var channel = new Channel("35.228.244.163", 80, ChannelCredentials.Insecure);
             var client = MagicOnionClient.Create<IStoreService>(channel);
 
             app.AddAsyncCommand("sync", "new", async () => 

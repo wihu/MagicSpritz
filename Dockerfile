@@ -8,4 +8,4 @@ COPY --from=sdk /app .
 ENTRYPOINT ["dotnet", "RM.Hotel.Server.dll"]
 
 # Expose ports.
-EXPOSE 12345
+EXPOSE 8080

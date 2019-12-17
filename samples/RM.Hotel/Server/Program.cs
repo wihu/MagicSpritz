@@ -32,7 +32,7 @@ namespace RM.Hotel.Server
             await MagicOnionHost.CreateDefaultBuilder()
                 .UseMagicOnion(
                     new MagicOnionOptions(isReturnExceptionStackTraceInErrorDetail: true)
-                    , new ServerPort("localhost", 12345, ServerCredentials.Insecure)
+                    , new ServerPort("0.0.0.0", 8080, ServerCredentials.Insecure)
                 )
                 .RunConsoleAsync();
         }
