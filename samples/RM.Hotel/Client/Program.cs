@@ -50,6 +50,9 @@ namespace RM.Hotel
 
         static async Task Main(string[] args)
         {
+            MagicOnion.MagicOnionInitializer.Register();
+            RegisterResolvers();
+
             const int kDefaultStartCoins = 5000;
             var gameConfig = new GameConfig();
             var configProvider = new ConfigProvider();
@@ -57,7 +60,7 @@ namespace RM.Hotel
 
             var store = new Store<Models.PlayerData>();
 
-            var server = new ServerMiddleware();
+            var server = new ServerMiddleware(store);
             var history = new HistoryMiddleware();
             store.AddMiddlewares(server, history);
 
@@ -136,8 +139,6 @@ namespace RM.Hotel
             app.AddCommand<int>("guest", "cout", (guestId) => new GuestCheckoutAction { GuestTypeId = guestId });
             app.AddCommand("hotel", "status", () => ShowHotelStatus(store));
 
-            MagicOnion.MagicOnionInitializer.Register();
-            RegisterResolvers();
             var channel = new Channel("35.228.244.163", 80, ChannelCredentials.Insecure);
             var client = MagicOnionClient.Create<IStoreService>(channel);
 

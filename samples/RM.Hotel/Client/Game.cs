@@ -50,6 +50,7 @@ namespace RM.Hotel
                     }
                     var val2 = (T2)Convert.ChangeType(arg2.Value, typeof(T2));
                     var action = CreateStoreAction(val2);
+                    // TODO: this should call IStore.Update(action) instead, otherwise middlewares wouldnt get called.
                     _store.UpdateStore(action);
                 });
             });
