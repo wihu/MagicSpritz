@@ -37,6 +37,30 @@
                 "/consoleloggerparameters:NoSummary"
             ],
             "problemMatcher": "$msCompile"
+        },
+        {
+            "label": "Generate MagicOnion Client",
+            "command": "./tools/moc/osx-x64/moc",
+            "type": "process",
+            "args": [
+                "-i",
+                "${workspaceFolder}/samples/RM.Hotel/Shared/RM.Hotel.Shared.csproj",
+                "-o",
+                "${workspaceFolder}/samples/RM.Hotel/Client/Generated/RM.Hotel.Generated.cs"
+            ],
+            "problemMatcher": "$msCompile"
+        },
+        {
+            "label": "Generate MessagePack",
+            "command": "./tools/mpc/osx/mpc",
+            "type": "process",
+            "args": [
+                "-i",
+                "${workspaceFolder}/samples/RM.Hotel/Shared/RM.Hotel.Shared.csproj",
+                "-o",
+                "${workspaceFolder}/samples/RM.Hotel/Shared/Generated/MessagePackGenerated.cs"
+            ],
+            "problemMatcher": "$msCompile"
         }
     ]
 }
