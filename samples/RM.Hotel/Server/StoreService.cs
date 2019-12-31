@@ -4,15 +4,21 @@ using Grpc.Core;
 using MagicOnion;
 using MagicOnion.Server;
 using RM.Hotel;
+using System.Security.Cryptography;
 
 namespace RM.Hotel.Server
 {
     public class StoreService : ServiceBase<IStoreService>, IStoreService
     {
-        UnaryResult<int> IStoreService.Update(Transaction t)
+        private SHA256 _hasher = SHA256.Create();
+        
+        UnaryResult<Transaction> IStoreService.Update(Transaction t)
         {
             Console.WriteLine(t.ToString());
-            return new UnaryResult<int>(1234);
+            // fake hash calculation just for testing, should hash from store state.
+            var bytes = System.Text.Encoding.UTF8.GetBytes(t.ToString());
+            t.Hash = Convert.ToBase64String(_hasher.ComputeHash(bytes));
+            return new UnaryResult<Transaction>(t);
         }
     }
 }

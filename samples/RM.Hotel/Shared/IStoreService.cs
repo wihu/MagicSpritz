@@ -7,6 +7,6 @@ namespace RM.Hotel
 {
 public interface IStoreService : IService<IStoreService>
 {
-    UnaryResult<int> Update(Transaction t);
+    UnaryResult<Transaction> Update(Transaction t);
 }
 }

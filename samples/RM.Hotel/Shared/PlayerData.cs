@@ -35,12 +35,12 @@ public struct Room
     public ImmutableList<Deco> Decos;
 }
 
-public struct Task
-{
-    public int TypeId;
-    public int RewardCoins;
-    public int StartTimeSec;
-}
+// public struct Task
+// {
+//     public int TypeId;
+//     public int RewardCoins;
+//     public int StartTimeSec;
+// }
 
 public struct Guest
 {
@@ -111,8 +111,8 @@ public struct PlayerData
     [IgnoreMember]
     public Inventory Inventory;
     // [Key(3)]
-    [IgnoreMember]
-    public ImmutableList<Task> Tasks;
+    // [IgnoreMember]
+    // public ImmutableList<Task> Tasks;
 
     public override string ToString()
     {

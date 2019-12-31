@@ -176,12 +176,12 @@ namespace RM.Hotel {
    
         static ResponseContext _Update(RequestContext __context)
         {
-            return CreateResponseContext<global::RM.Hotel.Transaction, int>(__context, UpdateMethod);
+            return CreateResponseContext<global::RM.Hotel.Transaction, global::RM.Hotel.Transaction>(__context, UpdateMethod);
         }
 
-        public global::MagicOnion.UnaryResult<int> Update(global::RM.Hotel.Transaction t)
+        public global::MagicOnion.UnaryResult<global::RM.Hotel.Transaction> Update(global::RM.Hotel.Transaction t)
         {
-            return InvokeAsync<global::RM.Hotel.Transaction, int>("IStoreService/Update", t, UpdateDelegate);
+            return InvokeAsync<global::RM.Hotel.Transaction, global::RM.Hotel.Transaction>("IStoreService/Update", t, UpdateDelegate);
         }
     }
 }

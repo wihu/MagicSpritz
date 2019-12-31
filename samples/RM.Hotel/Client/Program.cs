@@ -52,6 +52,9 @@ namespace RM.Hotel
         {
             MagicOnion.MagicOnionInitializer.Register();
             RegisterResolvers();
+            // var channel = new Channel("35.228.244.163", 80, ChannelCredentials.Insecure); // gcp load balancer external ip and port.
+            var channel = new Channel("0.0.0.0", 8080, ChannelCredentials.Insecure); // local dev server.
+            var client = MagicOnionClient.Create<IStoreService>(channel);
 
             const int kDefaultStartCoins = 5000;
             var gameConfig = new GameConfig();
@@ -60,7 +63,7 @@ namespace RM.Hotel
 
             var store = new Store<Models.PlayerData>();
 
-            var server = new ServerMiddleware(store);
+            var server = new ServerMiddleware(store, client);
             var history = new HistoryMiddleware();
             store.AddMiddlewares(server, history);
 
@@ -138,9 +141,6 @@ namespace RM.Hotel
             app.AddCommand<int, int>("guest", "cin", (guestId, roomId) => new GuestCheckinAction { GuestTypeId = guestId, RoomTypeId = roomId });
             app.AddCommand<int>("guest", "cout", (guestId) => new GuestCheckoutAction { GuestTypeId = guestId });
             app.AddCommand("hotel", "status", () => ShowHotelStatus(store));
-
-            var channel = new Channel("35.228.244.163", 80, ChannelCredentials.Insecure);
-            var client = MagicOnionClient.Create<IStoreService>(channel);
 
             app.AddAsyncCommand("sync", "new", async () => 
             {
