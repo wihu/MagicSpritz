@@ -6,4 +6,5 @@ samples/RM.Hotel/Client/bin
 samples/RM.Hotel/Client/obj
 samples/RM.Hotel/Shared/bin
 samples/RM.Hotel/Shared/obj
-tools
+tools/moc/osx-x64/moc
+tools/mpc/osx-x64/mpc
