@@ -2,39 +2,14 @@
     "version": "2.0.0",
     "tasks": [
         {
-            "label": "build",
-            "command": "dotnet",
+            "label": "Generate MessagePack",
+            "command": "./tools/mpc/osx/mpc",
             "type": "process",
             "args": [
-                "build",
-                "${workspaceFolder}/MagicSpritz.csproj",
-                "/property:GenerateFullPaths=true",
-                "/consoleloggerparameters:NoSummary"
-            ],
-            "problemMatcher": "$msCompile"
-        },
-        {
-            "label": "publish",
-            "command": "dotnet",
-            "type": "process",
-            "args": [
-                "publish",
-                "${workspaceFolder}/MagicSpritz.csproj",
-                "/property:GenerateFullPaths=true",
-                "/consoleloggerparameters:NoSummary"
-            ],
-            "problemMatcher": "$msCompile"
-        },
-        {
-            "label": "watch",
-            "command": "dotnet",
-            "type": "process",
-            "args": [
-                "watch",
-                "run",
-                "${workspaceFolder}/MagicSpritz.csproj",
-                "/property:GenerateFullPaths=true",
-                "/consoleloggerparameters:NoSummary"
+                "-i",
+                "${workspaceFolder}/samples/RM.Hotel/Shared/RM.Hotel.Shared.csproj",
+                "-o",
+                "${workspaceFolder}/samples/RM.Hotel/Shared/Generated/MessagePackGenerated.cs"
             ],
             "problemMatcher": "$msCompile"
         },
@@ -51,14 +26,24 @@
             "problemMatcher": "$msCompile"
         },
         {
-            "label": "Generate MessagePack",
-            "command": "./tools/mpc/osx/mpc",
+            "label": "Run Client",
+            "command": "dotnet",
             "type": "process",
             "args": [
-                "-i",
-                "${workspaceFolder}/samples/RM.Hotel/Shared/RM.Hotel.Shared.csproj",
-                "-o",
-                "${workspaceFolder}/samples/RM.Hotel/Shared/Generated/MessagePackGenerated.cs"
+                "run",
+                "--project",
+                "${workspaceFolder}/samples/RM.Hotel/Client/RM.Hotel.Client.csproj"
+            ],
+            "problemMatcher": "$msCompile"
+        },
+        {
+            "label": "Run Server",
+            "command": "dotnet",
+            "type": "process",
+            "args": [
+                "run",
+                "--project",
+                "${workspaceFolder}/samples/RM.Hotel/Server/RM.Hotel.Server.csproj"
             ],
             "problemMatcher": "$msCompile"
         }
