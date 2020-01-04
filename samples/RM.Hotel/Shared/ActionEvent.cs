@@ -4,10 +4,10 @@ using MessagePack;
 namespace RM.Hotel
 {
     [MessagePackObject]
-    public class Transaction // Change to ActionPayload
+    public class ActionEvent
     {
         [Key(0)]
-        public int Id;
+        public uint Id;
         [Key(1)]
         public string Hash;
         [Key(2)]
@@ -15,7 +15,7 @@ namespace RM.Hotel
 
         public override string ToString()
         {
-            return $"Id = {Id}, Hash = {Hash}, Action = {Action}";
+            return $"Id = {Id}, Hash = {Hash}, Action = {Action.GetType().Name}";
         }
     }
 }

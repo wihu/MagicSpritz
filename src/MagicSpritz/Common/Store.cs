@@ -19,17 +19,22 @@ namespace MagicSpritz
         private IStoreUpdater _updater;
 
         public T State => _state;
-        
+        public List<Modifier<T>> Modifiers => _modifiers;
+
         public Store() : this(new T())
         {
 
         }
 
-        public Store(T state)
+        public Store(T state) : this(state, new List<Modifier<T>>())
+        {
+        }
+
+        public Store(T state, List<Modifier<T>> modifiers)
         {
             _state = state;
             _stateSubject = new BehaviorSubject<T>(_state);
-            _modifiers = new List<Modifier<T>>();
+            _modifiers = new List<Modifier<T>>(modifiers);
             _updater = this;
         }
 

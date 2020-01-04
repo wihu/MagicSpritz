@@ -3,13 +3,13 @@
     "tasks": [
         {
             "label": "Generate MessagePack",
-            "command": "./tools/mpc/osx/mpc",
+            "command": "./tools/mpc/osx-x64/mpc",
             "type": "process",
             "args": [
                 "-i",
                 "${workspaceFolder}/samples/RM.Hotel/Shared/RM.Hotel.Shared.csproj",
                 "-o",
-                "${workspaceFolder}/samples/RM.Hotel/Shared/Generated/MessagePackGenerated.cs"
+                "${workspaceFolder}/samples/RM.Hotel/Shared/Generated/MessagePack.Generated.cs"
             ],
             "problemMatcher": "$msCompile"
         },

@@ -11,31 +11,53 @@ namespace RM.Hotel.Middlewares
 public class ServerMiddleware : Middleware<PlayerData>
 {
     private Store<PlayerData> _store;
+    private Store<PlayerData> _persistedStore;
     private IStoreService _client;
+    private StoreLocalPersister _persister;
     private SHA256 _hasher;
-    private Channel<Transaction> _channel;
+    private Channel<ActionEvent> _channel;
+    private uint _nextId;
 
-    public ServerMiddleware(Store<PlayerData> store, IStoreService client)
+    public ServerMiddleware(Store<PlayerData> store, IStoreService client, StoreLocalPersister persister)
     {
         _store = store;
+        _persistedStore = new Store<PlayerData>(store.State, store.Modifiers);
         _client = client;
+        _persister = persister;
         _hasher = SHA256.Create();
-        _channel = Channel.CreateUnbounded<Transaction>(new UnboundedChannelOptions() { SingleReader = true, SingleWriter = true });
+        _channel = Channel.CreateUnbounded<ActionEvent>(new UnboundedChannelOptions() { SingleReader = true, SingleWriter = true });
+        _nextId = 0;
+
         Task.Run(async () =>
         {
             while (await _channel.Reader.WaitToReadAsync())
             {
-                while (_channel.Reader.TryRead(out var t))
+                while (_channel.Reader.TryRead(out var e))
                 {
-                    Console.WriteLine("Read = " + t.Action.GetType().Name);
-                    var result = await _client.Update(t);
-                    if (result.Hash == t.Hash)
+                    Console.WriteLine("Read = " + e.Action.GetType().Name);
+                    // TODO: handle timeout if no server response.
+                    var response = await _client.SendEvent(e);
+                    if (response.Id == e.Id)
                     {
-                        // persist to local storage.
-                    }
-                    else
-                    {
-                        // discard remaining transactions in channel and revert to last valid store state.
+                        switch (response.Status)
+                        {
+                            case EventStatus.Accepted:
+                            // persist to local storage.
+                            _persistedStore.Update(e.Action);
+                            _persister.Set<PlayerData>("player", _persistedStore.State);
+                            _persister.Save();
+                            break;
+                            case EventStatus.Rejected:
+                            // discard remaining transactions in channel and revert to last valid store state.
+                            
+                            break;
+                            case EventStatus.Resend:
+                            // resend last event.
+                            break;
+                            default:
+                            break;
+                        }
+                        
                     }
                 }
             }
@@ -44,20 +66,17 @@ public class ServerMiddleware : Middleware<PlayerData>
 
     protected override void BeforeUpdate(IAction action)
     {
-        // Console.WriteLine("[Server] Before Update = " + action.GetType());
     }
 
     protected override void AfterUpdate(IAction action)
     {
-        // Console.WriteLine("[Server] After Update = " + action.GetType());
-
         var bytes = MessagePackSerializer.Serialize<PlayerData>(_store.State);
         var hash = _hasher.ComputeHash(bytes);
         Print(hash);
 
-        var t = new Transaction()
+        var t = new ActionEvent()
         {
-            Id = 0,
+            Id = ++_nextId,
             Action = action,
             Hash = Convert.ToBase64String(hash)
         };

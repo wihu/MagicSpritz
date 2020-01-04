@@ -24,7 +24,7 @@ namespace RM.Hotel
             (
                 MagicOnion.Resolvers.MagicOnionResolver.Instance,
                 MessagePack.Resolvers.GeneratedResolver.Instance,
-                MessagePack.Resolvers.Client.GeneratedResolver.Instance,
+                // MessagePack.Resolvers.Client.GeneratedResolver.Instance,
                 BuiltinResolver.Instance,
                 PrimitiveObjectResolver.Instance
             );
@@ -62,8 +62,11 @@ namespace RM.Hotel
             configProvider.Add("default", gameConfig);
 
             var store = new Store<Models.PlayerData>();
+            
+            var config = new StoreLocalPersister.Config { FilePath = "LocalData/Player.txt", TextFormat = true };
+            var persister = new StoreLocalPersister(config);
 
-            var server = new ServerMiddleware(store, client);
+            var server = new ServerMiddleware(store, client, persister);
             var history = new HistoryMiddleware();
             store.AddMiddlewares(server, history);
 
@@ -144,20 +147,20 @@ namespace RM.Hotel
 
             app.AddAsyncCommand("sync", "new", async () => 
             {
-                var t = new Transaction
+                var t = new ActionEvent
                 {
                     Id = 1,
                     Hash = "abc",
                     Action = new NewGameAction { StartCoins = 250 }
                 };
 
-                var result = await client.Update(t);
+                var result = await client.SendEvent(t);
                 Console.WriteLine("sync result = " + result);
             });
 
             app.AddCommand("sync", "test", () => 
             {
-                var t = new Transaction
+                var t = new ActionEvent
                 {
                     Id = 1,
                     Hash = "abc",
@@ -166,13 +169,11 @@ namespace RM.Hotel
 
                 var bytes = MessagePackSerializer.Serialize(t);
                 var json = MessagePackSerializer.ToJson(bytes);
-                var result = MessagePackSerializer.Deserialize<Transaction>(bytes);
+                var result = MessagePackSerializer.Deserialize<ActionEvent>(bytes);
                 var newGame = result.Action as NewGameAction;
                 Console.WriteLine("sync result = " + json + " => " + result.ToString());
             });
 
-            var config = new StoreLocalPersister.Config { FilePath = "LocalData/Player.txt", TextFormat = true };
-            var persister = new StoreLocalPersister(config);
             app.AddCommand("data", "save", () =>
             {
                 persister.Set<Models.PlayerData>("player", store.State);
