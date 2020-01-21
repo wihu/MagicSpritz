@@ -34,7 +34,6 @@ public class ServerMiddleware : Middleware<PlayerData>
             {
                 while (_channel.Reader.TryRead(out var e))
                 {
-                    Console.WriteLine("Read = " + e.Action.GetType().Name);
                     // TODO: handle timeout if no server response.
                     var response = await _client.SendEvent(e);
                     if (response.Id == e.Id)
@@ -57,7 +56,10 @@ public class ServerMiddleware : Middleware<PlayerData>
                             default:
                             break;
                         }
-                        
+                    }
+                    else
+                    {
+                        Console.WriteLine("Invalid Id = " + response.Id);
                     }
                 }
             }
@@ -80,6 +82,7 @@ public class ServerMiddleware : Middleware<PlayerData>
             Action = action,
             Hash = Convert.ToBase64String(hash)
         };
+        Console.WriteLine("Sending = " + t.Action.GetType().Name);
         _channel.Writer.TryWrite(t);
 
     }

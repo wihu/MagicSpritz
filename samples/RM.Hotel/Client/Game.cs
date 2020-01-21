@@ -8,9 +8,9 @@ namespace RM.Hotel
 {
     public class Game : CommandLineApplication
     {
-        private IStoreUpdater _store;
+        private IStore _store;
 
-        public Game(IStoreUpdater store)
+        public Game(IStore store)
         {
             _store = store;
         }
@@ -50,8 +50,7 @@ namespace RM.Hotel
                     }
                     var val2 = (T2)Convert.ChangeType(arg2.Value, typeof(T2));
                     var action = CreateStoreAction(val2);
-                    // TODO: this should call IStore.Update(action) instead, otherwise middlewares wouldnt get called.
-                    _store.UpdateStore(action);
+                    _store.Update(action);
                 });
             });
         }
@@ -76,7 +75,7 @@ namespace RM.Hotel
                     var val2 = (T2)Convert.ChangeType(arg2.Value, typeof(T2));
                     var val3 = (T3)Convert.ChangeType(arg3.Value, typeof(T3));
                     var action = CreateStoreAction(val2, val3);
-                    _store.UpdateStore(action);
+                    _store.Update(action);
                 });
             });
         }

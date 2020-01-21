@@ -6,12 +6,17 @@ using System.Reactive.Linq;
 
 namespace MagicSpritz
 {
+    public interface IStore
+    {
+        void Update(IAction action);
+    }
+
     public interface IStoreUpdater
     {
         void UpdateStore(IAction action);
     }
 
-    public class Store<T> : IStoreUpdater where T : new()
+    public class Store<T> : IStore, IStoreUpdater where T : new()
     {
         private T _state;
         private BehaviorSubject<T> _stateSubject;
