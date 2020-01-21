@@ -22,15 +22,21 @@ public class LoadGameAction : IAction
     public PlayerData State;
 }
 
+[MessagePackObject]
 public class BuyDecoAction : IAction
 {
+    [Key(0)]
     public int TypeId;
+    [Key(1)]
     public int Cost;
 }
 
+[MessagePackObject]
 public class UpgradeRoomAction : IAction
 {
+    [Key(0)]
     public int TypeId;
+    [Key(1)]
     public int Cost;
 }
 

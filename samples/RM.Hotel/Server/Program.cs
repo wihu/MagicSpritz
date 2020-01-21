@@ -19,6 +19,7 @@ namespace RM.Hotel.Server
             (
                 // MagicOnion.Resolvers.MagicOnionResolver.Instance,
                 MessagePack.Resolvers.GeneratedResolver.Instance,
+                RM.Hotel.Shared.Resolvers.CustomResolver.Instance,
                 BuiltinResolver.Instance,
                 PrimitiveObjectResolver.Instance
             );
